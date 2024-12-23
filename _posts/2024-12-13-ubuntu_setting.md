@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Ubuntu setting
-marp: true
+marp: false
 theme: gaia
 size: 16:9
 _class: lead
@@ -125,6 +125,47 @@ $ sudo lshw -C network
        product: RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller
        ......
        resources: irq:18 ioport:3000(size=256) memory:50404000-50404fff memory:50400000-50403fff
+```
+
+---
+
+- backport-iwlwifi-dkms 최신 버전 설치
+  - [archive.ubuntu.com](https://archive.ubuntu.com/ubuntu/pool/universe/b/backport-iwlwifi-dkms/) 에서 backport-iwlwifi-dkms-9858-0ubuntu3.deb Download
+
+```bash
+$ sudo apt-get update
+$ sudo apt-get upgrade –y
+$ sudo dpkg –i backport-iwlwifi-dkms_9858-0ubuntu3_all.deb
+```
+
+- backport-iwlwifi-dkms packeage 설치 중 오류 시 dkms, libc6-dev package 수동 설치 후 다시 시도
+
+```bash
+$ sudo apt --fix-broken install
+$ sudo apt install dkms libc6-dev
+```
+
+---
+
+- 재부팅 후 lshw 명령으로 device가 잡히는지 확인
+
+```bash
+$ lspci -nnk | grep 0280 -A4
+00:14.3 Network controller [0280]: Intel Corporation Device [8086:51f1] (rev 01)
+	DeviceName: Onboard - Ethernet
+	Subsystem: Intel Corporation Device [8086:0074]
+	Kernel driver in use: iwlwifi
+	Kernel modules: iwlwifi
+$ sudo lshw -C network
+  *-network                 
+       description: Ethernet interface
+       product: Intel Corporation
+       vendor: Intel Corporation
+       physical id: 14.3
+       bus info: pci@0000:00:14.3
+       logical name: wlo1
+       version: 01
+       ......
 ```
 
 ---
@@ -278,7 +319,7 @@ $ vi .env
 ```
 
 ```
-- COSMOS_TAG=5.0.5  # lasted -> 5.0.5 변경
+- COSMOS_TAG=5.0.5  # latest -> 5.0.5 변경
 - COSMOS_DEMO=0     # 삭제
 ```
 
